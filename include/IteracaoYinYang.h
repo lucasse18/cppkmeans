@@ -1,0 +1,10 @@
+#ifndef CPPK_MEANS_ITERACAOYINYANG_H
+#define CPPK_MEANS_ITERACAOYINYANG_H
+
+
+class IteracaoYinYang {
+
+};
+
+
+#endif //CPPK_MEANS_ITERACAOYINYANG_H
