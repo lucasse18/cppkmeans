@@ -1,20 +1,21 @@
 #include "Algoritmo.h"
 
-Algoritmo::Algoritmo(Inicializacao *ini, Iteracao *itr) {
+Algoritmo::Algoritmo(Dataset *dados, Inicializacao *ini, Iteracao *itr) {
+  this->dados = dados;
   this->ini = ini;
   this->itr = itr;
 }
 
-int Algoritmo::inicializar() {
-  return ini->inicializa();
+bool Algoritmo::inicializar() {
+  return ini->inicializa(dados, &centros);
 }
 
-int Algoritmo::iterar() {
-  return itr->itera();
+bool Algoritmo::iterar() {
+  return itr->itera(dados, &centros);
 }
 
-int Algoritmo::rodar() {
-  return inicializar() &&  iterar();
+bool Algoritmo::rodar() {
+  return inicializar() && iterar();
 }
 
 Algoritmo::~Algoritmo() {

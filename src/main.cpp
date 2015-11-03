@@ -1,28 +1,18 @@
 #include "Dataset.h"
 #include "Leitura.h"
-/*#include "Algoritmo.h"
+#include "Algoritmo.h"
 #include "InicializacaoSimples.h"
-#include "IteracaoSimples.h"*/
+#include "IteracaoSimples.h"
 
 using namespace std;
 
-int main() {
-  Dataset d(150, 4, 3, true);
-  Leitura l(&d);
-  l.ler();
+int main(int argc, char *argv[]) {
 
-  /*Inicializacao *ini = new InicializacaoSimples();
-  Iteracao *itr = new IteracaoSimples();
+  Dataset dados(150, 4, 3, true);
+  Leitura leitura(&dados);
 
-  Algoritmo kmeans(ini, itr);
-  kmeans.rodar();*/
-
-  for(unsigned long i = 0; i < d.getNExemplos(); ++i) {
-    for(unsigned long j = 0; j < d.getNAtributos(); ++j) {
-      cout << d.getExemplos().at(i).at(j) << ',';
-    }
-    cout << '\n';
-  }
+  Algoritmo kmeans(&dados, new InicializacaoSimples(), new IteracaoSimples());
+  kmeans.rodar();
 
   return 0;
 }

@@ -4,18 +4,21 @@
 
 #include "Inicializacao.h"
 #include "Iteracao.h"
+#include "Exemplo.h"
 
 class Algoritmo {
 
 private:
+  Dataset *dados;
+  vector<Centro> centros;
   Inicializacao *ini;
   Iteracao *itr;
-  int inicializar();
-  int iterar();
+  bool inicializar();
+  bool iterar();
 
 public:
-  Algoritmo(Inicializacao *ini, Iteracao *itr);
-  int rodar();
+  Algoritmo(Dataset *dados, Inicializacao *ini, Iteracao *itr);
+  bool rodar();
   virtual ~Algoritmo();
 };
 

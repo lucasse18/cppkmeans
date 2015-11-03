@@ -3,11 +3,14 @@
 
 
 #include "Inicializacao.h"
+#include "Dataset.h"
+
+using namespace std;
 
 class InicializacaoSimples: public Inicializacao {
 
 public:
-  virtual bool inicializa() override;
+  bool inicializa(Dataset *dados, vector<Centro> *centros) override;
 };
 
 

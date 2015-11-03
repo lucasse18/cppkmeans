@@ -1,13 +1,13 @@
 #include "Dataset.h"
 
-Dataset::Dataset(unsigned long nExemplos, unsigned long nAtributos, int K, bool classe) {
+Dataset::Dataset(unsigned long nExemplos, unsigned long nAtributos, unsigned int K, bool classe) {
   this->nExemplos = nExemplos;
   this->nAtributos = nAtributos;
   this->K = K;
   this->classe = classe;
 }
 
-vector<vector<float>> &Dataset::getExemplos() {
+vector<Exemplo> &Dataset::getExemplos() {
   return exemplos;
 }
 
@@ -19,7 +19,7 @@ unsigned long Dataset::getNAtributos() const {
   return nAtributos;
 }
 
-int Dataset::getK() const {
+unsigned Dataset::getK() const {
   return K;
 }
 

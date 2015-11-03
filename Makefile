@@ -13,6 +13,8 @@ SOURCE = src/main.cpp\
 	src/IteracaoYinYang.cpp\
 	src/Leitura.cpp\
 	src/Exemplo.cpp\
+	src/Centro.cpp\
+	src/Distancia.cpp\
 	src/Dataset.cpp
 
 ${TARGET}: ${SOURCE}

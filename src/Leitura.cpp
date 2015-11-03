@@ -1,9 +1,14 @@
 #include "Leitura.h"
 
-Leitura::Leitura(Dataset *data) : dados(data) { }
+Leitura::Leitura(Dataset *dados) {
+  this->dados = dados;
+  this->ler();
+}
 
+//TODO verificar erros de formatacao na leitura
+//TODO ler sem precisar da quantidade de atributos inicializada
 int Leitura::ler() {
-  std::ios_base::sync_with_stdio(false);
+  std::ios_base::sync_with_stdio(false);//input utilizando buffers, mais rápido
   stringstream ss;
   string input;
   float valor;
@@ -12,29 +17,22 @@ int Leitura::ler() {
 
   while(getline(cin, input)) {
     if(input.front() != '%') {
-      dados->getExemplos().push_back(vector<float>());
       ss << input;
       j = 0;
+      dados->getExemplos().push_back(Exemplo());
       while(ss >> valor) {
-        dados->getExemplos().at(i).push_back(valor);
+        dados->getExemplos().at(i).getAtributos().push_back(valor);
         ss >> sep;
         j++;
-        if(dados->temClasse() && j == dados->getNAtributos()) {
+        if(dados->temClasse() && j == dados->getNAtributos())
           ss >> input;
-        }
       }
       ss.clear();
       i++;
     }
   }
 
-  for(unsigned long k = 0; k < i; ++k) {
-    for(unsigned long l = 0; l < dados->getNAtributos(); ++l) {
-      cout << dados->getExemplos().at(k).at(l) << ',';
-    }
-    cout << '\n';
-  }
-
-  //}
+  //dados->setNExemplos(i);
+  //dados->setNAtributos(j);
   return 1;
 }

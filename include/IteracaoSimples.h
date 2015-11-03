@@ -6,8 +6,12 @@
 
 class IteracaoSimples : public Iteracao {
 
+private:
+  void recomputa(Dataset *dados, vector<Centro> *centros);
+  unsigned long atribui(Dataset *dados, vector<Centro> *centros);
+
 public:
-  virtual int itera() override;
+  bool itera(Dataset *dados, vector<Centro> *centros) override;
 };
 
 

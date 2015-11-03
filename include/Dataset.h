@@ -1,26 +1,28 @@
 #ifndef CPPK_MEANS_DATASET_H
 #define CPPK_MEANS_DATASET_H
 
+
 #include <iostream>
 #include <vector>
+#include "Exemplo.h"
 
 using namespace std;
 
 class Dataset {
 
 private:
-  vector<vector<float>> exemplos;
+  vector<Exemplo> exemplos;
   unsigned long nExemplos;
   unsigned long nAtributos;
-  int K;
+  unsigned K;
   bool classe;
 
 public:
-  Dataset(unsigned long nExemplos, unsigned long nAtributos, int K, bool classe);
-  vector<vector<float>> & getExemplos();
+  Dataset(unsigned long nExemplos, unsigned long nAtributos, unsigned int K, bool classe);
+  vector<Exemplo> & getExemplos();
   unsigned long getNExemplos() const;
   unsigned long getNAtributos() const;
-  int getK() const;
+  unsigned getK() const;
   bool temClasse() const;
 };
 
