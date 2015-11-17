@@ -1,1 +1,7 @@
-Fazer: corrigir k-means simples, implementar otimizações
+Leitura                  OK
+
+Implementacao Lloyd      OK
+
+Implementacao YinYang    X
+
+Implementacao KMeans++   X
