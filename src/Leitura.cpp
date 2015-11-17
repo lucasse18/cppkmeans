@@ -1,30 +1,31 @@
 #include "Leitura.h"
 
-Leitura::Leitura(Dataset *dados) {
-  this->dados = dados;
-  this->ler();
-}
-
 //TODO verificar erros de formatacao na leitura
-//TODO ler sem precisar da quantidade de atributos inicializada
-int Leitura::ler() {
-  std::ios_base::sync_with_stdio(false);//input utilizando buffers, mais rápido
+//TODO determinar o numero de atributos antes de ler
+int Leitura::ler(Dataset *dados) {
+
+  std::ios_base::sync_with_stdio(false);//input com buffers
+
+  int nAtr = (*dados->getAddrNAtributos());
+  int nEx = (*dados->getAddrNExemplos());
+  double *ex = dados->getExemplos();
+  bool temClasse = dados->hasClasse();
+  int i=0, j=0;
+  double valor;
+
   stringstream ss;
   string input;
-  float valor;
   char sep;
-  unsigned long i=0, j=0;
 
   while(getline(cin, input)) {
     if(input.front() != '%') {
       ss << input;
       j = 0;
-      dados->getExemplos().push_back(Exemplo());
       while(ss >> valor) {
-        dados->getExemplos().at(i).getAtributos().push_back(valor);
+        ex[j+(i * nAtr)] = valor;
         ss >> sep;
         j++;
-        if(dados->temClasse() && j == dados->getNAtributos())
+        if(temClasse && j == nAtr)
           ss >> input;
       }
       ss.clear();

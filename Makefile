@@ -4,21 +4,20 @@ CC = g++
 CFLAGS = -std=c++11 -Wall -ggdb3
 
 INCLUDE = "include"
+#LIBS = "lib"
 
 SOURCE = src/main.cpp\
-	src/Algoritmo.cpp\
-	src/InicializacaoSimples.cpp\
-	src/InicializacaoPP.cpp\
-	src/IteracaoSimples.cpp\
-	src/IteracaoYinYang.cpp\
-	src/Leitura.cpp\
-	src/Exemplo.cpp\
-	src/Centro.cpp\
-	src/Distancia.cpp\
-	src/Dataset.cpp
+	src/Dataset.cpp\
+	src/Leitura.cpp
+	#src/Inicializacao.cpp\
+	#src/Iteracao.cpp\
+	#src/Algoritmo.cpp\
+	#src/Lloyd.cpp\
+	#src/YinYang.cpp\
+	#src/KMeansPP.cpp\
 
 ${TARGET}: ${SOURCE}
-	${CC} ${CFLAGS} -I ${INCLUDE} -o $@ $^
+	${CC} ${CFLAGS} -I${INCLUDE} -o $@ $^
 
 clean:
 	rm ${TARGET}

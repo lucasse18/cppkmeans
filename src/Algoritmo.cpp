@@ -1,24 +1,29 @@
 #include "Algoritmo.h"
 
-Algoritmo::Algoritmo(Dataset *dados, Inicializacao *ini, Iteracao *itr) {
-  this->dados = dados;
-  this->ini = ini;
-  this->itr = itr;
-}
-
-bool Algoritmo::inicializar() {
-  return ini->inicializa(dados, &centros);
-}
-
-bool Algoritmo::iterar() {
-  return itr->itera(dados, &centros);
-}
-
-bool Algoritmo::rodar() {
-  return inicializar() && iterar();
-}
+/* construtor e destrutor */
+Algoritmo::Algoritmo(Dataset *dados) : dados(dados) { }
 
 Algoritmo::~Algoritmo() {
-  delete ini;
-  delete itr;
+  //classe fica responsavel por desalocar somente ini e itr
+  delete ini; delete itr;
 }
+/* construtor e destrutor */
+
+
+/* getters e setters */
+Inicializacao *Algoritmo::getIni() const {
+  return ini;
+}
+
+void Algoritmo::setIni(Inicializacao *ini) {
+  Algoritmo::ini = ini;
+}
+
+Iteracao *Algoritmo::getItr() const {
+  return itr;
+}
+
+void Algoritmo::setItr(Iteracao *itr) {
+  Algoritmo::itr = itr;
+}
+/* getters e setters */

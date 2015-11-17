@@ -3,15 +3,15 @@
 
 
 #include "Dataset.h"
-#include "Exemplo.h"
-#include "Centro.h"
-#include <algorithm>
+#include "kmeans.h"
 
 class Inicializacao {
 
 public:
-  virtual bool inicializa(Dataset *dados, vector<Centro> *centros) = 0;
   virtual ~Inicializacao() { }
+
+  bool inicializaSimples(Dataset *dados);
+  bool inicializaPP(Dataset *dados);
 };
 
 

@@ -10,12 +10,8 @@ using namespace std;
 
 class Leitura {
 
-private:
-  Dataset *dados;
-
 public:
-  Leitura(Dataset *dados);
-  int ler();
+  static int ler(Dataset *dados);
 };
 
 

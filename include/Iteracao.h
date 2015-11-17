@@ -3,15 +3,14 @@
 
 
 #include "Dataset.h"
-#include "Distancia.h"
-#include "Exemplo.h"
-#include "Centro.h"
+#include "kmeans.h"
 
 class Iteracao {
 
 public:
-  virtual bool itera(Dataset *dados, vector<Centro> *centros) = 0;
   virtual ~Iteracao() { }
+  bool iteraSimples(Dataset *dados);
+  bool iteraYinYang(Dataset *dados);
 };
 
 

@@ -3,27 +3,35 @@
 
 
 #include <iostream>
-#include <vector>
-#include "Exemplo.h"
 
 using namespace std;
 
 class Dataset {
 
 private:
-  vector<Exemplo> exemplos;
-  unsigned long nExemplos;
-  unsigned long nAtributos;
-  unsigned K;
+  double *exemplos;
+  double *centros;
+  int nExemplos;
+  int nAtributos;
+  int K;
   bool classe;
 
 public:
-  Dataset(unsigned long nExemplos, unsigned long nAtributos, unsigned int K, bool classe);
-  vector<Exemplo> & getExemplos();
-  unsigned long getNExemplos() const;
-  unsigned long getNAtributos() const;
-  unsigned getK() const;
-  bool temClasse() const;
+  Dataset(int nExemplos, int nAtributos, int K, bool classe);
+  virtual ~Dataset();
+
+  double * getExemplos() const;
+  void setExemplos(double *exemplos);
+  double * getCentros() const;
+  void setCentros(double *centros);
+  int *getAddrNExemplos();
+  void setNExemplos(int nExemplos);
+  int *getAddrNAtributos();
+  void setNAtributos(int nAtributos);
+  int *getAddrK();
+  void setK(int K);
+  bool hasClasse() const;
+  void setClasse(bool classe);
 };
 
 
