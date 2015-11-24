@@ -2,14 +2,12 @@
 #define CPPKMEANS_KMEANS_H
 
 
-#include "Algoritmo.h"
+#include "KMeans.h"
 
-class Lloyd : public Algoritmo {
+class Lloyd : public KMeans {
 
 public:
-  Lloyd(Dataset *dados) : Algoritmo(dados) { }
-  bool rodar();
-  bool salvar();
+  Lloyd(Dataset *dados) : KMeans(dados) { }
 };
 
 

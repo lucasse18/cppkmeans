@@ -6,8 +6,7 @@ int Leitura::ler(Dataset *dados) {
 
   std::ios_base::sync_with_stdio(false);//input com buffers
 
-  int nAtr = (*dados->getAddrNAtributos());
-  int nEx = (*dados->getAddrNExemplos());
+  int nAtr = dados->getNAtributos();
   double *ex = dados->getExemplos();
   bool temClasse = dados->hasClasse();
   int i=0, j=0;

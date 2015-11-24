@@ -1,14 +1,46 @@
-#ifndef _KMEANS_H_
-#define _KMEANS_H_
+#ifndef KMEANS_H
+#define KMEANS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif //__cplusplus
 
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <float.h>
+#include <sys/param.h>
+#include <sys/time.h>
 
-void lloyd(double *ex, double *cen, int *pnex, int *pnat,
-           int *pk, int *bcls, int *nexc, double *rss);
+/* ex      = nex * nat * double
+ * cen     = k   * nat * double
+ * nex     = int
+ * nat     = int
+ * k       = int
+ * bcls    = nex * int
+ * nexcl   = k   * int
+ * rss     = k   * double
+ * gen     = k   * int
+ * cant    = k   * nat * double
+ * ub      = nex * double
+ * lb      = nex * double
+ * var     = k   * double
+ * secbcls = nex * int
+ */
 
-void InicializaClassico(double *ex, double *cen, int *pnex,
-                        int *pnat, int *pk, int *gen);
+void lloyd(double *ex, double *cen, int nex, int nat,
+           int k, int *bcls, int *nexc, double *rss);
 
-#endif //CPPKMEANS_KMEANS_H
+void yinyang(double *ex, double *c, double *cant, double *ub,
+             double *lb, double *var, int nex, int nat, int k,
+             int *bcls, int *secbcls, int *nexcl, double *rss);
+
+void inicializaClassico(double *ex, double *cen, int nex,
+                        int nat, int k, int *gen);
+
+
+#ifdef __cplusplus
+}
+#endif //__cplusplus
+
+#endif //KMEANS_H

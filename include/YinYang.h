@@ -2,12 +2,14 @@
 #define CPPKMEANS_YINYANG_H
 
 
-#include "Algoritmo.h"
+#include "KMeans.h"
 
-class YinYang : public Algoritmo {
+class YinYang : public KMeans {
 
 public:
-  YinYang(Dataset *dados) : Algoritmo(dados) { }
+  YinYang(Dataset *dados) : KMeans(dados) { }
+
+  bool rodar();
 };
 
 

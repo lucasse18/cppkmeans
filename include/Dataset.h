@@ -24,11 +24,11 @@ public:
   void setExemplos(double *exemplos);
   double * getCentros() const;
   void setCentros(double *centros);
-  int *getAddrNExemplos();
+  int getNExemplos();
   void setNExemplos(int nExemplos);
-  int *getAddrNAtributos();
+  int getNAtributos();
   void setNAtributos(int nAtributos);
-  int *getAddrK();
+  int getK();
   void setK(int K);
   bool hasClasse() const;
   void setClasse(bool classe);

@@ -5,18 +5,19 @@ bool Inicializacao::inicializaSimples(Dataset *dados) {
   int *index;
 
   try {
-    index = new int[(*dados->getAddrK())];
+    index = new int[dados->getK()];
 
-    /* TODO checar erro na inicialização */
-    InicializaClassico(dados->getExemplos(), dados->getCentros(),
-                       dados->getAddrNExemplos(), dados->getAddrNAtributos(),
-                       dados->getAddrK(), index);
   } catch (bad_alloc &ba) {
     cerr << "bad alloc: " << ba.what() << '\n';
-    delete index;
     return false;
   }
 
+  /* TODO checar erro na inicialização */
+  inicializaClassico(dados->getExemplos(), dados->getCentros(),
+                       dados->getNExemplos(), dados->getNAtributos(),
+                       dados->getK(), index);
+
+  delete[] index;
   return true;
 }
 

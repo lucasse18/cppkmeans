@@ -2,12 +2,12 @@
 #define CPPKMEANS_KMEANSPP_H
 
 
-#include "Algoritmo.h"
+#include "KMeans.h"
 
-class KMeansPP : public Algoritmo {
+class KMeansPP : public KMeans {
 
 public:
-  KMeansPP(Dataset *dados) : Algoritmo(dados) { }
+  KMeansPP(Dataset *dados) : KMeans(dados) { }
 };
 
 

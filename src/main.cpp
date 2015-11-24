@@ -1,28 +1,51 @@
+#include <float.h>
 #include "Dataset.h"
 #include "Leitura.h"
-//#include "Lloyd.h"
+#include "Lloyd.h"
+#include "YinYang.h"
 
-using namespace std;
+time_t time_ms(void);
 
 int main(int argc, char *argv[]) {
 
-  Dataset dados(150, 4, 3, true);
+  if (argc != 5)
+    exit(EXIT_FAILURE);
+
+  int nex, nat, k;
+  nex = atoi(argv[1]);
+  nat = atoi(argv[2]);
+  k = atoi(argv[3]);
+
+  bool temClasse = (argv[4][0] == 't' || argv[4][0] == 'T');
+
+  Dataset dados(nex, nat, k, temClasse);
   Leitura::ler(&dados);
 
-  double *ex = dados.getExemplos();
+  srand48(time_ms());
 
-  for(int i = 0; i < 150; ++i) {
-    for(int j = 0; j < 4; ++j) {
-      if(j != 3)
-        cout << ex[j + (i * 4)] << ',';
-      else
-        cout << ex[j + (i * 4)];
-    }
-    cout << '\n';
-  }
+  Lloyd lloyd(&dados);
+  lloyd.rodar();
 
-//  Lloyd kmeans(&dados);
-//  kmeans.rodar();
+  /*YinYang yinyang(&dados);
+  yinyang.rodar();*/
 
   return 0;
 }
+
+#if defined(__WIN32__)
+#include <windows.h>
+
+time_t time_ms(void) {
+  return timeGetTime();
+}
+
+#else
+#include <sys/time.h>
+
+time_t time_ms() {
+  struct timespec ts;
+  clock_gettime(CLOCK_REALTIME, &ts);
+  return ts.tv_sec * ts.tv_nsec;
+}
+
+#endif
