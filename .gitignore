@@ -1,4 +1,3 @@
-Datasets/*/cini
-Datasets/*/cfim
-Datasets/*/out
-Datasets/*/grupos
+CMakeLists.txt
+.idea
+cppkmeans

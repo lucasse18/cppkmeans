@@ -148,8 +148,6 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
 
     *rss = 0.0;
     trocou = 0;
-    for(i = 0; i < k; i++)
-      nexcl[i] = 0;
 
     /* atribuir cada exemplo a um cluster */
     for(i = 0; i < nex; i++) {
@@ -190,11 +188,12 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
 
         if(bcls[i] != novoMelhor) {
           trocou = 1;
+          nexcl[bcls[i]]--;
           bcls[i] = novoMelhor;
+          nexcl[bcls[i]]++;
         }
       }
 
-      nexcl[bcls[i]]++;
       *rss += ub[i];
     }
   }
