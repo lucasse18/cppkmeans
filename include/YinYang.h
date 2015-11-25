@@ -3,13 +3,15 @@
 
 
 #include "KMeans.h"
+#include "InicializacaoSimples.h"
+#include "IteracaoYY.h"
 
 class YinYang : public KMeans {
 
 public:
-  YinYang(Dataset *dados) : KMeans(dados) { }
+  YinYang(Dataset *dados);
 
-  bool rodar();
+  virtual bool hookSalvar() override;
 };
 
 

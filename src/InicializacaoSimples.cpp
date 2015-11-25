@@ -1,7 +1,6 @@
-#include "Inicializacao.h"
+#include "InicializacaoSimples.h"
 
-bool Inicializacao::inicializaSimples(Dataset *dados) {
-
+bool InicializacaoSimples::inicializa(Dataset *dados) {
   int *index;
 
   try {
@@ -18,9 +17,5 @@ bool Inicializacao::inicializaSimples(Dataset *dados) {
                        dados->getK(), index);
 
   delete[] index;
-  return true;
-}
-
-bool Inicializacao::inicializaPP(Dataset *dados) {
   return true;
 }

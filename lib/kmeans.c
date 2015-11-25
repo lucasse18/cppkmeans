@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "kmeans.h"
 
 void lloyd(double *ex, double *cen, int nex, int nat, int k, int *bcls,
@@ -47,20 +48,20 @@ void lloyd(double *ex, double *cen, int nex, int nat, int k, int *bcls,
         cen[j + nat * bcls[i]] += ex[j + nat * i];
     }
     for (i = 0; i < k; i++) {
-      for (j = 0; j < nat; ++j)
+      for (j = 0; j < nat; j++)
         if (nexcl[i] != 0)
           cen[j + nat * i] /= nexcl[i];
     }
   }
 
-  /*for(i = 0; i < k; ++i)
-    printf("Exemplos no cluster [%d](kmeans.c(lloyd)): %d\n",i, nexcl[i]);*/
+  for(i = 0; i < k; i++)
+    fprintf(stderr, "[DEBUG] Exemplos no cluster[%d]: %d\n",i, nexcl[i]);
   printf("%f\n", *rss);
 }
 
 double max(double *v, int size) {
-  double maior = DBL_MIN;
-  for(int i = 0; i < size; i++) {
+  double maior = v[0];// DBL_MIN;
+  for(int i = 1; i < size; i++) {
     if(v[i] > maior)
       maior = v[i];
   }
@@ -71,66 +72,52 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
              double *lb, double *var, int nex, int nat, int k,
              int *bcls, int *secbcls, int *nexcl, double *rss) {
 
-  int trocou;
-  int i, j, l, novoMelhor = -1;
+  int trocou = 0;
+  int i, j, l, novoMelhor = 0;
   double dist, distMenor, segDistMenor,delta;
 
-  /* inicializa todos os exemplos no cluster -1 */
-  for (i = 0; i < nex; i++) bcls[i] = secbcls[i] = -1;
-  for (i = 0; i < k; i++) {
-    /* garante que a primeira atribuicao ocorra normalmente */
-    var[i] = 0.0;
-    lb[i] = 0.0;
-    ub[i] = 1.0;
-  }
+  for (i = 0; i < nex; i++)
+    bcls[i] = secbcls[i] = 0;
 
-  while(1) {
+  *rss = 0;
+  for(i = 0; i < k; i++) nexcl[i] = 0;
 
-    *rss = 0.0;
-    trocou = 0;
-    for(i = 0; i < k; i++) nexcl[i] = 0;
-
-    /* etapa 1: atribuir cada exemplo a um cluster */
-    //FIXME max(var, k) retorna DOUBLE_MIN
-    for(i = 0; i < nex; i++) {
-      distMenor = segDistMenor = DBL_MAX;
+  /* primeira atribuicao */
+  for(i = 0; i < nex; i++) {
+      distMenor = DBL_MAX;
       for(j = 0; j < k; j++) {
-        double maxVar = max(var, k);
         dist = 0.0;
         for (l = 0; l < nat; l++) {
-          delta = c[l + nat * j] - cant[l + nat * j];
+          delta = ex[l + nat * i] - c[l + nat * j];
           dist += delta * delta;
         }
-        if(ub[i] + maxVar < lb[i] - dist) {
-          dist = 0.0;
-          for(l = 0; l < nat; l++) {
-            delta = ex[l + nat * i] - c[l + nat * j];
-            dist += delta * delta;
-          }
-          //FIXME se k=1 secbcls[i] sera -1
-          if(dist < distMenor) {
-            segDistMenor = distMenor;
-            secbcls[i] = novoMelhor;
-            distMenor = dist;
-            novoMelhor = j;
-          }
-          else if(dist < segDistMenor) {
-            segDistMenor = dist;
-            secbcls[i] = j;
-          }
-        }
-        if(bcls[i] != novoMelhor) {
-          trocou = 1;
-          bcls[i] = novoMelhor;
+        if(dist < distMenor) {
+          distMenor = dist;
+          novoMelhor = j;
         }
       }
+      if(bcls[i] != novoMelhor) {
+        trocou = 1;
+        bcls[i] = novoMelhor;
+      }
       nexcl[bcls[i]]++;
-      *rss += ub[i];
+      *rss += distMenor;
     }
 
-    if(!trocou) break;
+  /* inicializar ub e lb */
+  for(i = 0; i < nex; i++) {
+    ub[i] = lb[i] = 0.0;
+    for(j = 0; j < nat; j++) {
+      delta = ex[j + nat * i] - c[j + nat * bcls[i]];
+      ub[i] += delta * delta;
+      delta = ex[j + nat * i] - c[j + nat * secbcls[i]];
+      lb[i] += delta * delta;
+    }
+  }
 
-    /* etapa 2: atualizar cada cluster */
+  while(trocou) {
+
+    /* atualizar cada cluster */
     for (i = 0; i < k * nat; i++) {
       cant[i] = c[i];
       c[i] = 0.0;
@@ -140,35 +127,80 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
         c[j + nat * bcls[i]] += ex[j + nat * i];
     }
     for (i = 0; i < k; i++) {
-      for (j = 0; j < nat; ++j)
-        if (nexcl[i] != 0)
+      for (j = 0; j < nat; j++)
+        if (nexcl[i] > 0)
           c[j + nat * i] /= nexcl[i];
     }
 
-    /* atualizar ub e lb */
-    for(i = 0; i < nex; ++i) {
-      ub[i] = 0.0; lb[i] = 0.0;
-      for(j = 0; j < nat; ++j) {
-        delta = ex[j + nat * i] - c[j + nat * bcls[i]];
-        ub[i] += delta * delta;
-        delta = ex[j + nat * i] - c[j + nat * secbcls[i]];
-        lb[i] += delta * delta;
-      }
-    }
-
     /* calcular variacao de cada cluster */
-    for(i = 0; i < k; ++i) {
+    for(i = 0; i < k; i++) {
       var[i] = 0.0;
-      for(j = 0; j < nat; ++j) {
+      for(j = 0; j < nat; j++) {
         delta = c[j + nat * i] - cant[j + nat * i];
         var[i] += delta * delta;
       }
     }
 
+    /* atualizar ub e lb */
+    ub[i] += var[bcls[i]];
+    lb[i] -= max(var, k);
+
+
+    *rss = 0.0;
+    trocou = 0;
+    for(i = 0; i < k; i++)
+      nexcl[i] = 0;
+
+    /* atribuir cada exemplo a um cluster */
+    for(i = 0; i < nex; i++) {
+
+      dist = 0.0;
+      for (j = 0; j < nat; j++) {
+        delta = c[j + nat * bcls[i]] - cant[j + nat * bcls[i]];
+        dist += delta * delta;
+      }
+
+      double p1 = ub[i] + dist;
+      double p2 = lb[i] - max(var, k);
+
+      if(p1 > p2) {
+        novoMelhor = 0;
+        secbcls[i] = 0;
+        distMenor = ub[i];
+        segDistMenor = lb[i];
+
+        dist = 0.0;
+        for(j = 0; j < k; j++) {
+          for(l = 0; l < nat; l++) {
+            delta = ex[l + nat * i] - c[l + nat * j];
+            dist += delta * delta;
+          }
+
+          if(dist < distMenor) {
+            segDistMenor = distMenor;
+            secbcls[i] = novoMelhor;
+            distMenor = dist;
+            novoMelhor = j;
+          }
+          if(dist < segDistMenor) {
+            segDistMenor = dist;
+            secbcls[i] = j;
+          }
+        }
+
+        if(bcls[i] != novoMelhor) {
+          trocou = 1;
+          bcls[i] = novoMelhor;
+        }
+      }
+
+      nexcl[bcls[i]]++;
+      *rss += ub[i];
+    }
   }
 
-  /*for(i = 0; i < k; ++i)
-    printf("Exemplos no cluster [%d](kmeans.c(yy)): %d\n",i, nexcl[i]);*/
+  for(i = 0; i < k; i++)
+    fprintf(stderr, "[DEBUG] Exemplos no cluster[%d]: %d\n",i, nexcl[i]);
   printf("%f\n", *rss);
 }
 

@@ -10,8 +10,7 @@ class Inicializacao {
 public:
   virtual ~Inicializacao() { }
 
-  bool inicializaSimples(Dataset *dados);
-  bool inicializaPP(Dataset *dados);
+  virtual bool inicializa(Dataset *dados) = 0;
 };
 
 

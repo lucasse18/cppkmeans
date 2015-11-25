@@ -1,15 +1,17 @@
 TARGET = cppkmeans
 
 CC = g++
-CFLAGS = -std=c++11 -Wall -ggdb3
+CFLAGS = -std=c++11 -Wall -O3 -ggdb3
 
 INCLUDE = "include"
 LIB = "lib"
 
 SOURCE = src/main.cpp\
 	src/Dataset.cpp\
-	src/Inicializacao.cpp\
-	src/Iteracao.cpp\
+	src/InicializacaoSimples.cpp\
+	src/InicializacaoPP.cpp\
+	src/IteracaoSimples.cpp\
+	src/IteracaoYY.cpp\
 	src/KMeans.cpp\
 	src/Lloyd.cpp\
 	src/YinYang.cpp\

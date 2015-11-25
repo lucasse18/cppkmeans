@@ -17,14 +17,15 @@ public:
   KMeans(Dataset *dados);
   virtual ~KMeans();
 
-  virtual bool rodar();
-  bool salvar();
+  virtual bool rodar() final;
+  virtual bool hookSalvar();
 
   Dataset * getDados() const;
   void setDados(Dataset *dados);
   Inicializacao * getIni() const;
+  void setIni(Inicializacao *ini);
   Iteracao * getItr() const;
-
+  void setItr(Iteracao *itr);
 };
 
 

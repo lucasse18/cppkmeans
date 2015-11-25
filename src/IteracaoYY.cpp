@@ -1,48 +1,22 @@
-#include "Iteracao.h"
+#include "IteracaoYY.h"
 
-bool Iteracao::iteraSimples(Dataset *dados) {
-
-  int *melhorCluster;
-  int *numeroExCluster;
-  double rss;
-
-  try {
-    melhorCluster = new int[dados->getNExemplos()];
-    numeroExCluster = new int[dados->getK()];
-  }
-  catch (bad_alloc &ba) {
-    cerr << "bad alloc: " << ba.what() << '\n';
-    return false;
-  }
-
-  /* TODO checar erro na iteracao */
-  lloyd(dados->getExemplos(), dados->getCentros(), dados->getNExemplos(),
-          dados->getNAtributos(), dados->getK(), melhorCluster, numeroExCluster, &rss);
-
-  /*cout << "RSS(iteracao.cpp): " << rss << '\n';
-  for(int i = 0; i < dados->getK(); ++i)
-    cout << "Exemplos no cluster [" << i << "](iteracao.c): "
-         << numeroExCluster[i] << '\n';*/
-
-  delete[] melhorCluster;
-  delete[] numeroExCluster;
-  return true;
-}
-
-bool Iteracao::iteraYinYang(Dataset *dados) {
+bool IteracaoYY::itera(Dataset *dados) {
   int *melhorCluster, *segMelhorCluster;
   int *numeroExCluster;
   double rss;
+
   double *centrosAnt, *ub, *lb, *variacao;
 
   try {
     melhorCluster = new int[dados->getNExemplos()];
     numeroExCluster = new int[dados->getK()];
+
     segMelhorCluster = new int[dados->getNExemplos()];
     ub = new double[dados->getNExemplos()];
     lb = new double[dados->getNExemplos()];
     variacao = new double[dados->getK()];
     centrosAnt = new double[dados->getK() * dados->getNAtributos()];
+
   }
   catch (bad_alloc &ba) {
     cerr << "bad alloc: " << ba.what() << '\n';
@@ -59,12 +33,12 @@ bool Iteracao::iteraYinYang(Dataset *dados) {
     cout << "Exemplos no cluster [" << i << "](iteracao.c): "
          << numeroExCluster[i] << '\n';*/
 
-  /*delete[] numeroExCluster;
+  delete[] numeroExCluster;
   delete[] melhorCluster;
   delete[] segMelhorCluster;
   delete[] centrosAnt;
   delete[] ub;
   delete[] lb;
-  delete[] variacao;*/
+  delete[] variacao;
   return true;
 }

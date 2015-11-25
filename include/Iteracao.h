@@ -9,8 +9,8 @@ class Iteracao {
 
 public:
   virtual ~Iteracao() { }
-  bool iteraSimples(Dataset *dados);
-  bool iteraYinYang(Dataset *dados);
+
+  virtual bool itera(Dataset *dados) = 0;
 };
 
 

@@ -1,25 +1,22 @@
 #include "KMeans.h"
 
 /* construtor e destrutor */
-KMeans::KMeans(Dataset *dados) : dados(dados) {
-  ini = new Inicializacao;
-  itr = new Iteracao;
-}
+KMeans::KMeans(Dataset *dados) : dados(dados) { }
 
 KMeans::~KMeans() {
-  //classe fica responsavel por desalocar somente ini e itr
-  delete ini; delete itr;
+  delete ini;
+  delete itr;
 }
 /* construtor e destrutor */
 
 bool KMeans::rodar() {
-  if(ini->inicializaSimples(dados))
-    return itr->iteraSimples(dados);
+  if(ini->inicializa(dados) && itr->itera(dados))
+    return hookSalvar();
 
   return false;
 }
 
-bool KMeans::salvar() {
+bool KMeans::hookSalvar() {
   return true;
 }
 
@@ -36,7 +33,15 @@ Inicializacao *KMeans::getIni() const {
   return ini;
 }
 
+void KMeans::setIni(Inicializacao *ini) {
+  KMeans::ini = ini;
+}
+
 Iteracao *KMeans::getItr() const {
   return itr;
+}
+
+void KMeans::setItr(Iteracao *itr) {
+  KMeans::itr = itr;
 }
 /* getters e setters */

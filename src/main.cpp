@@ -1,4 +1,3 @@
-#include <float.h>
 #include "Dataset.h"
 #include "Leitura.h"
 #include "Lloyd.h"
@@ -26,8 +25,8 @@ int main(int argc, char *argv[]) {
   Lloyd lloyd(&dados);
   lloyd.rodar();
 
-  /*YinYang yinyang(&dados);
-  yinyang.rodar();*/
+  YinYang yinyang(&dados);
+  yinyang.rodar();
 
   return 0;
 }

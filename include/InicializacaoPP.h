@@ -1,0 +1,10 @@
+#ifndef CPPKMEANS_INICIALIZACAOPP_H
+#define CPPKMEANS_INICIALIZACAOPP_H
+
+
+class InicializacaoPP {
+
+};
+
+
+#endif //CPPKMEANS_INICIALIZACAOPP_H

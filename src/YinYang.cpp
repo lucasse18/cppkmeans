@@ -1,7 +1,10 @@
 #include "YinYang.h"
 
-bool YinYang::rodar() {
-  if (getIni()->inicializaSimples(getDados()))
-    return getItr()->iteraYinYang(getDados());
-  return false;
+YinYang::YinYang(Dataset *dados) : KMeans(dados) {
+  setIni(new InicializacaoSimples);
+  setItr(new IteracaoYY);
+}
+
+bool YinYang::hookSalvar() {
+  return true;
 }

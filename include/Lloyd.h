@@ -3,11 +3,15 @@
 
 
 #include "KMeans.h"
+#include "IteracaoSimples.h"
+#include "InicializacaoSimples.h"
 
 class Lloyd : public KMeans {
 
 public:
-  Lloyd(Dataset *dados) : KMeans(dados) { }
+  Lloyd(Dataset *dados);
+
+  virtual bool hookSalvar() override;
 };
 
 
