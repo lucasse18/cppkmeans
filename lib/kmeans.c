@@ -69,7 +69,8 @@ void lloyd(double *ex, double *c, int nex, int nat, int k, int *bcls,
   printf("%f\n", *rss);
 }
 
-double max(double *v, int size) {
+double max(double *v, int proibido, int size) {
+  // ???? não pode ser o proibido FIXME
   double maior = v[0];// DBL_MIN;
   for(int i = 1; i < size; i++) {
     if(v[i] > maior)
@@ -136,6 +137,15 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
     }
   }
 
+  /* calcular variacao de cada cluster */
+  for(i = 0; i < k; i++) {
+    var[i] = 0.0;
+    for(j = 0; j < nat; j++) {
+      delta = c[j + nat * i] - cant[j + nat * i];
+      var[i] += delta * delta;
+    }
+  }
+
   while(trocou) {
 
     /* atualizar cada cluster */
@@ -143,29 +153,11 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
       cant[i] = c[i];
       c[i] = 0.0;
     }
+
     for (i = 0; i < nex; i++) {
       for (j = 0; j < nat; j++)
-        c[j + nat * bcls[i]] += ex[j + nat * i];
+        c[j + nat * bcls[i]] += ex[j + nat * i]/nexcl[i];
     }
-    for (i = 0; i < k; i++) {
-      for (j = 0; j < nat; j++)
-        if (nexcl[i] > 0)
-          c[j + nat * i] /= nexcl[i];
-    }
-
-    /* calcular variacao de cada cluster */
-    for(i = 0; i < k; i++) {
-      var[i] = 0.0;
-      for(j = 0; j < nat; j++) {
-        delta = c[j + nat * i] - cant[j + nat * i];
-        var[i] += delta * delta;
-      }
-    }
-
-    /* atualizar ub e lb */
-    ub[i] += var[bcls[i]];
-    lb[i] -= max(var, k);
-
 
     *rss = 0.0;
     trocou = 0;
@@ -173,14 +165,7 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
     /* atribuir cada exemplo a um cluster */
     for(i = 0; i < nex; i++) {
 
-      /* calcula distancia do centro atual ao centroanterior */
-      dist = 0.0;
-      for (j = 0; j < nat; j++) {
-        delta = c[j + nat * bcls[i]] - cant[j + nat * bcls[i]];
-        dist += delta * delta;
-      }
-
-      double p1 = ub[i] + dist;
+      double p1 = ub[i] + var[bcls[i]];
       double p2 = lb[i] - max(var, k);
 
       if(p1 > p2) {
@@ -217,6 +202,20 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
       }
 
       *rss += ub[i];
+    }
+
+  if (trocou) {
+    /* calcular variacao de cada cluster */
+    for(i = 0; i < k; i++) {
+      var[i] = 0.0;
+      for(j = 0; j < nat; j++) {
+        delta = c[j + nat * i] - cant[j + nat * i];
+        var[i] += delta * delta;
+      }
+    }
+      /* atualizar ub e lb */
+      ub[i] += var[bcls[i]];
+      lb[i] -= max(var, bcls[i], k);
     }
   }
 
