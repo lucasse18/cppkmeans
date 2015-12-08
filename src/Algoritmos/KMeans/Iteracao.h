@@ -3,7 +3,6 @@
 
 
 #include "Dataset.h"
-#include "kmeans.h"
 
 class Iteracao {
 

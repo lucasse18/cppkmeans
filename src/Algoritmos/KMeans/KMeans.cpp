@@ -20,6 +20,14 @@ bool KMeans::hookSalvar() {
   return true;
 }
 
+void KMeans::iterar() {
+  itr->itera(dados);
+}
+
+void KMeans::inicializar() {
+  ini->inicializa(dados);
+}
+
 /* getters e setters */
 Dataset *KMeans::getDados() const {
   return dados;

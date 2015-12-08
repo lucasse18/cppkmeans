@@ -28,7 +28,7 @@ extern "C" {
  * secbcls = nex * int
  */
 
-void lloyd(double *ex, double *cen, int nex, int nat,
+void lloyd(double *ex, double *c, int nex, int nat,
            int k, int *bcls, int *nexc, double *rss);
 
 void yinyang(double *ex, double *c, double *cant, double *ub,

@@ -22,11 +22,27 @@ int main(int argc, char *argv[]) {
 
   srand48(time_ms());
 
+  cout << "Lloyd: ";
   Lloyd lloyd(&dados);
-  lloyd.rodar();
+  lloyd.inicializar();
 
+  double *centros = dados.getCentros();
+  double *mem_centros = new double[k * nat];
+  for(int i = 0; i < k; i++) {
+    for(int j = 0; j < nat; j++)
+      mem_centros[j + i * nat] = centros[j + i * nat];
+  }
+
+  lloyd.iterar();
+
+  for(int i = 0; i < k; i++) {
+    for(int j = 0; j < nat; j++)
+      centros[j + i * nat] = mem_centros[j + i * nat];
+  }
+
+  cout << "\nYinYang: ";
   YinYang yinyang(&dados);
-  yinyang.rodar();
+  yinyang.iterar();
 
   return 0;
 }

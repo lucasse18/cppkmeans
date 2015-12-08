@@ -1,4 +1,5 @@
 #include "IteracaoYY.h"
+#include <kmeans.h>
 
 bool IteracaoYY::itera(Dataset *dados) {
   int *melhorCluster, *segMelhorCluster;

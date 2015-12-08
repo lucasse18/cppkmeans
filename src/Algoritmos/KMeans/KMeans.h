@@ -4,7 +4,7 @@
 
 #include "Inicializacao.h"
 #include "Iteracao.h"
-#include "kmeans.h"
+#include "KMeans.h"
 
 class KMeans {
 
@@ -18,6 +18,8 @@ public:
   virtual ~KMeans();
 
   virtual bool rodar() final;
+  void iterar();
+  void inicializar();
   virtual bool hookSalvar();
 
   Dataset * getDados() const;

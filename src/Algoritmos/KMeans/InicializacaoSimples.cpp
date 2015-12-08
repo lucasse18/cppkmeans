@@ -1,4 +1,5 @@
 #include "InicializacaoSimples.h"
+#include <kmeans.h>
 
 bool InicializacaoSimples::inicializa(Dataset *dados) {
   int *index;

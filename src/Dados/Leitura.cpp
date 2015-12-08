@@ -4,7 +4,7 @@
 //TODO determinar o numero de atributos antes de ler
 int Leitura::ler(Dataset *dados) {
 
-  std::ios_base::sync_with_stdio(false);//input com buffers
+  //std::ios_base::sync_with_stdio(false);//input com buffers
 
   int nAtr = dados->getNAtributos();
   double *ex = dados->getExemplos();

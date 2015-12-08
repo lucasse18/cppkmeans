@@ -1,12 +1,22 @@
-#include <assert.h>
 #include "kmeans.h"
 
-void lloyd(double *ex, double *cen, int nex, int nat, int k, int *bcls,
+void lloyd(double *ex, double *c, int nex, int nat, int k, int *bcls,
            int *nexcl, double *rss) {
 
   int trocou;
   int i, j, l, novoMelhor = -1;
   double dist, distMenor, delta;
+
+  for(i = 0; i < k; i++) {
+    fprintf(stderr, "[DEBUG] Centro[%d]: ", i);
+    for(j = 0; j < nat; j++) {
+      if(j != nat-1)
+        fprintf(stderr, "%f, ", c[j + i * nat]);
+      else
+        fprintf(stderr, "%f", c[j + i * nat]);
+    }
+    fputc('\n', stderr);
+  }
 
   /* inicializa todos os exemplos no cluster -1 */
   for (i = 0; i < nex; i++) bcls[i] = -1;
@@ -23,7 +33,7 @@ void lloyd(double *ex, double *cen, int nex, int nat, int k, int *bcls,
       for(j = 0; j < k; j++) {
         dist = 0.0;
         for (l = 0; l < nat; l++) {
-          delta = ex[l + nat * i] - cen[l + nat * j];
+          delta = ex[l + nat * i] - c[l + nat * j];
           dist += delta * delta;
         }
         if(dist < distMenor) {
@@ -42,15 +52,15 @@ void lloyd(double *ex, double *cen, int nex, int nat, int k, int *bcls,
     if(!trocou) break;
 
     /* etapa 2: recalcular o novo centro */
-    for (i = 0; i < k * nat; i++) cen[i] = 0.0;
+    for (i = 0; i < k * nat; i++) c[i] = 0.0;
     for (i = 0; i < nex; i++) {
       for (j = 0; j < nat; j++)
-        cen[j + nat * bcls[i]] += ex[j + nat * i];
+        c[j + nat * bcls[i]] += ex[j + nat * i];
     }
     for (i = 0; i < k; i++) {
       for (j = 0; j < nat; j++)
         if (nexcl[i] != 0)
-          cen[j + nat * i] /= nexcl[i];
+          c[j + nat * i] /= nexcl[i];
     }
   }
 
@@ -76,6 +86,17 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
   int i, j, l, novoMelhor = 0;
   double dist, distMenor, segDistMenor,delta;
 
+  for(i = 0; i < k; i++) {
+    fprintf(stderr, "[DEBUG] Centro[%d]: ", i);
+    for(j = 0; j < nat; j++) {
+      if (j != nat-1)
+        fprintf(stderr, "%f, ", c[j + i * nat]);
+      else
+        fprintf(stderr, "%f", c[j + i * nat]);
+    }
+    fputc('\n', stderr);
+  }
+
   for (i = 0; i < nex; i++)
     bcls[i] = secbcls[i] = 0;
 
@@ -84,25 +105,25 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
 
   /* primeira atribuicao */
   for(i = 0; i < nex; i++) {
-      distMenor = DBL_MAX;
-      for(j = 0; j < k; j++) {
-        dist = 0.0;
-        for (l = 0; l < nat; l++) {
-          delta = ex[l + nat * i] - c[l + nat * j];
-          dist += delta * delta;
-        }
-        if(dist < distMenor) {
-          distMenor = dist;
-          novoMelhor = j;
-        }
+    distMenor = DBL_MAX;
+    for(j = 0; j < k; j++) {
+      dist = 0.0;
+      for (l = 0; l < nat; l++) {
+        delta = ex[l + nat * i] - c[l + nat * j];
+        dist += delta * delta;
       }
-      if(bcls[i] != novoMelhor) {
-        trocou = 1;
-        bcls[i] = novoMelhor;
+      if(dist < distMenor) {
+        distMenor = dist;
+        novoMelhor = j;
       }
-      nexcl[bcls[i]]++;
-      *rss += distMenor;
     }
+    if(bcls[i] != novoMelhor) {
+      trocou = 1;
+      bcls[i] = novoMelhor;
+    }
+    nexcl[bcls[i]]++;
+    *rss += distMenor;
+  }
 
   /* inicializar ub e lb */
   for(i = 0; i < nex; i++) {
@@ -152,6 +173,7 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
     /* atribuir cada exemplo a um cluster */
     for(i = 0; i < nex; i++) {
 
+      /* calcula distancia do centro atual ao centroanterior */
       dist = 0.0;
       for (j = 0; j < nat; j++) {
         delta = c[j + nat * bcls[i]] - cant[j + nat * bcls[i]];
@@ -162,7 +184,7 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
       double p2 = lb[i] - max(var, k);
 
       if(p1 > p2) {
-        novoMelhor = 0;
+        novoMelhor = bcls[i];
         secbcls[i] = 0;
         distMenor = ub[i];
         segDistMenor = lb[i];
@@ -221,17 +243,17 @@ void inicializaClassico(double *ex, double *cen, int nex, int nat, int k, int *g
       rnd = (int) (lrand48() % nex);//FIXME overflow ?
     } while(buscaLinear(rnd, gen, i) != 0);
     gen[i] = rnd;
-    fprintf(stderr, "[DEBUG] Exemplo %d escolhido como centro inicial: \n", gen[i]);
+    /*fprintf(stderr, "[DEBUG] Exemplo %d escolhido como centro inicial: \n", gen[i]);*/
 
-    fprintf(stderr, "[DEBUG] ");
+    /*fprintf(stderr, "[DEBUG] ");*/
     for(j = 0; j < nat; j++) {
       cen[j + i * nat] = ex[j + rnd * nat];
-      if(j != k)
+      /*if(j != k)
         fprintf(stderr, "%f,", cen[j + (i * nat)]);
       else
-        fprintf(stderr, "%f", cen[j + (i * nat)]);
+        fprintf(stderr, "%f", cen[j + (i * nat)]);*/
     }
-    fputc('\n', stderr);
+    /*fputc('\n', stderr);*/
   }
 }
 

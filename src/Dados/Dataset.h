@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include "MementoDataset.h"
 
 using namespace std;
 
