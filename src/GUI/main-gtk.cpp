@@ -1,6 +1,6 @@
 #include <glibmm/refptr.h>
 #include <gtkmm/application.h>
-#include "PacoteGUI/JanelaPrincipal.h"
+#include "JanelaPrincipal.h"
 
 using Gtk::Application;
 

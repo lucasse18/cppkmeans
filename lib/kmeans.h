@@ -5,13 +5,6 @@
 extern "C" {
 #endif //__cplusplus
 
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <float.h>
-#include <sys/param.h>
-#include <sys/time.h>
-
 /* ex      = nex * nat * double
  * cen     = k   * nat * double
  * nex     = int

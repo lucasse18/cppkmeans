@@ -1,4 +1,7 @@
 #include "kmeans.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 
 void lloyd(double *ex, double *c, int nex, int nat, int k, int *bcls,
            int *nexcl, double *rss) {
@@ -7,7 +10,7 @@ void lloyd(double *ex, double *c, int nex, int nat, int k, int *bcls,
   int i, j, l, novoMelhor = -1;
   double dist, distMenor, delta;
 
-  for(i = 0; i < k; i++) {
+  /*for(i = 0; i < k; i++) {
     fprintf(stderr, "[DEBUG] Centro[%d]: ", i);
     for(j = 0; j < nat; j++) {
       if(j != nat-1)
@@ -16,10 +19,11 @@ void lloyd(double *ex, double *c, int nex, int nat, int k, int *bcls,
         fprintf(stderr, "%f", c[j + i * nat]);
     }
     fputc('\n', stderr);
-  }
+  }*/
 
   /* inicializa todos os exemplos no cluster -1 */
-  for (i = 0; i < nex; i++) bcls[i] = -1;
+  for (i = 0; i < nex; i++)
+    bcls[i] = -1;
 
   while(1) {
 
@@ -29,7 +33,7 @@ void lloyd(double *ex, double *c, int nex, int nat, int k, int *bcls,
 
     /* etapa 1: atribuir cada exemplo a um cluster */
     for(i = 0; i < nex; i++) {
-      distMenor = DBL_MAX;
+      distMenor = INFINITY;
       for(j = 0; j < k; j++) {
         dist = 0.0;
         for (l = 0; l < nat; l++) {
@@ -52,16 +56,17 @@ void lloyd(double *ex, double *c, int nex, int nat, int k, int *bcls,
     if(!trocou) break;
 
     /* etapa 2: recalcular o novo centro */
-    for (i = 0; i < k * nat; i++) c[i] = 0.0;
-    for (i = 0; i < nex; i++) {
+    for (i = 0; i < k * nat; i++)
+      c[i] = 0.0;
+
+    for (i = 0; i < nex; i++)
       for (j = 0; j < nat; j++)
         c[j + nat * bcls[i]] += ex[j + nat * i];
-    }
-    for (i = 0; i < k; i++) {
+
+    for (i = 0; i < k; i++)
       for (j = 0; j < nat; j++)
-        if (nexcl[i] != 0)
+        if (nexcl[i] > 0)
           c[j + nat * i] /= nexcl[i];
-    }
   }
 
   for(i = 0; i < k; i++)
@@ -69,13 +74,26 @@ void lloyd(double *ex, double *c, int nex, int nat, int k, int *bcls,
   printf("%f\n", *rss);
 }
 
-double max(double *v, int proibido, int size) {
-  // ???? não pode ser o proibido FIXME
-  double maior = v[0];// DBL_MIN;
-  for(int i = 1; i < size; i++) {
-    if(v[i] > maior)
+double max(double *v, int size, int melhor) {
+
+  if (size == 1)
+    return v[0];
+
+  int i = 0;
+  double maior = -INFINITY;
+
+  for (i = 0; i < size; i++)
+    if (i != melhor && v[i] > maior)
       maior = v[i];
-  }
+
+  /*for (i = 0; i < size; i++)
+    if (v[i] > maior)
+      maior = v[i];*/
+
+  if (maior == -INFINITY)
+    abort();
+
+  /*printf("[DEBUG] Maior: %.2f\n", maior);*/
   return maior;
 }
 
@@ -87,7 +105,7 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
   int i, j, l, novoMelhor = 0;
   double dist, distMenor, segDistMenor,delta;
 
-  for(i = 0; i < k; i++) {
+  /*for(i = 0; i < k; i++) {
     fprintf(stderr, "[DEBUG] Centro[%d]: ", i);
     for(j = 0; j < nat; j++) {
       if (j != nat-1)
@@ -96,17 +114,19 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
         fprintf(stderr, "%f", c[j + i * nat]);
     }
     fputc('\n', stderr);
-  }
+  }*/
 
   for (i = 0; i < nex; i++)
     bcls[i] = secbcls[i] = 0;
 
   *rss = 0;
-  for(i = 0; i < k; i++) nexcl[i] = 0;
+  for(i = 0; i < k; i++)
+    nexcl[i] = 0;
 
   /* primeira atribuicao */
   for(i = 0; i < nex; i++) {
-    distMenor = DBL_MAX;
+    distMenor = INFINITY;
+    segDistMenor = INFINITY;
     for(j = 0; j < k; j++) {
       dist = 0.0;
       for (l = 0; l < nat; l++) {
@@ -114,17 +134,44 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
         dist += delta * delta;
       }
       if(dist < distMenor) {
+        segDistMenor = distMenor;
+        secbcls[i] = novoMelhor;
         distMenor = dist;
         novoMelhor = j;
+      }
+      else if(dist < segDistMenor) {
+        segDistMenor = dist;
+        secbcls[i] = j;
       }
     }
     if(bcls[i] != novoMelhor) {
       trocou = 1;
       bcls[i] = novoMelhor;
     }
+
+    /* DEBUG */
+    if (distMenor == INFINITY || segDistMenor == INFINITY || bcls[i] >= k)
+      abort();
+
     nexcl[bcls[i]]++;
     *rss += distMenor;
   }
+
+  /* salvar centro anterior */
+  for (i = 0; i < k * nat; i++) {
+    cant[i] = c[i];
+    c[i] = 0.0;
+  }
+
+  /* atualizar cada centro */
+  for (i = 0; i < nex; i++)
+    for (j = 0; j < nat; j++)
+      c[j + nat * bcls[i]] += ex[j + nat * i];
+
+  for (i = 0; i < k; i++)
+    for (j = 0; j < nat; j++)
+      if (nexcl[i] > 0)
+        c[j + nat * i] /= nexcl[i];
 
   /* inicializar ub e lb */
   for(i = 0; i < nex; i++) {
@@ -142,31 +189,20 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
     var[i] = 0.0;
     for(j = 0; j < nat; j++) {
       delta = c[j + nat * i] - cant[j + nat * i];
+      /*printf("Delta: %.2f, ", delta);*/
       var[i] += delta * delta;
     }
+    /*printf("\nVar[%d]: %.2f\n", i, var[i]);*/
   }
 
   while(trocou) {
-
-    /* atualizar cada cluster */
-    for (i = 0; i < k * nat; i++) {
-      cant[i] = c[i];
-      c[i] = 0.0;
-    }
-
-    for (i = 0; i < nex; i++) {
-      for (j = 0; j < nat; j++)
-        c[j + nat * bcls[i]] += ex[j + nat * i]/nexcl[i];
-    }
-
     *rss = 0.0;
     trocou = 0;
 
     /* atribuir cada exemplo a um cluster */
     for(i = 0; i < nex; i++) {
-
-      double p1 = ub[i] + var[bcls[i]];
-      double p2 = lb[i] - max(var, k);
+    double p1 = ub[i] + var[bcls[i]];
+    double p2 = lb[i] - max(var, k, bcls[i]);
 
       if(p1 > p2) {
         novoMelhor = bcls[i];
@@ -187,7 +223,7 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
             distMenor = dist;
             novoMelhor = j;
           }
-          if(dist < segDistMenor) {
+          else if(dist < segDistMenor) {
             segDistMenor = dist;
             secbcls[i] = j;
           }
@@ -200,22 +236,41 @@ void yinyang(double *ex, double *c, double *cant, double *ub,
           nexcl[bcls[i]]++;
         }
       }
-
       *rss += ub[i];
     }
 
-  if (trocou) {
-    /* calcular variacao de cada cluster */
-    for(i = 0; i < k; i++) {
-      var[i] = 0.0;
-      for(j = 0; j < nat; j++) {
-        delta = c[j + nat * i] - cant[j + nat * i];
-        var[i] += delta * delta;
+    if (trocou) {
+
+      /* salvar centro anterior */
+      for (i = 0; i < k * nat; i++) {
+        cant[i] = c[i];
+        c[i] = 0.0;
       }
-    }
+
+      /* atualizar cada cluster */
+      for (i = 0; i < nex; i++)
+        for (j = 0; j < nat; j++)
+          c[j + nat * bcls[i]] += ex[j + nat * i];
+
+      for (i = 0; i < k; i++)
+        for (j = 0; j < nat; j++)
+          if (nexcl[i] > 0)
+            c[j + nat * i] /= nexcl[i];
+
+      /* calcular variacao de cada cluster */
+      for(i = 0; i < k; i++) {
+        var[i] = 0.0;
+        for(j = 0; j < nat; j++) {
+          delta = c[j + nat * i] - cant[j + nat * i];
+          /*printf("Delta: %.2f, ", delta);*/
+          var[i] += delta * delta;
+        }
+        /*printf("\nVar[%d]: %.2f\n", i, var[i]);*/
+      }
+
       /* atualizar ub e lb */
       ub[i] += var[bcls[i]];
-      lb[i] -= max(var, bcls[i], k);
+      lb[i] -= max(var, k, bcls[i]);
     }
   }
 
@@ -256,7 +311,7 @@ void inicializaClassico(double *ex, double *cen, int nex, int nat, int k, int *g
   }
 }
 
-int compDouble(const void *a, const void *b) {
+int compara_double(const void *a, const void *b) {
   if((*(double *) a) > (*(double *) b)) return 1;
   if((*(double *) a) < (*(double *) b)) return -1;
   return 0;

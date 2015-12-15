@@ -56,11 +56,3 @@ prof: ${DATA_FILES} ${KMEANS_FILES} ${CLI_FILES}
 
 prof-gtk: ${DATA_FILES} ${KMEANS_FILES} ${GUI_FILES}
 	${CC} ${PRFFLAGS} ${INCLUDES} -I "src/GUI" -o $@ $^
-
-clean:
-	rm ${CLI_TARGET}
-	rm ${GUI_TARGET}
-	rm debug
-	rm debug-gtk
-	rm prof
-	rm prof-gtk
